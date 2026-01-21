@@ -1,0 +1,12 @@
+[package]
+name = "user/roblox"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Promise = "cody-nelson/promise@4.0.1"
+Bridgenet2 = "ffrostflame/bridgenet2@1.0.0"
+
+[server-dependencies]
+ProfileService = "firebird702/profileservice@1.1.0"
