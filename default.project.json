@@ -11,9 +11,6 @@
       },
       "Packages": {
         "$path": "Packages"
-      },
-       "Assets": {
-        "$path": "Assets"
       }
     },
 

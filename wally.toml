@@ -9,4 +9,4 @@ Promise = "cody-nelson/promise@4.0.1"
 Bridgenet2 = "ffrostflame/bridgenet2@1.0.0"
 
 [server-dependencies]
-ProfileService = "firebird702/profileservice@1.1.0"
+ProfileStore = "lm-loleris/profilestore@1.0.3"

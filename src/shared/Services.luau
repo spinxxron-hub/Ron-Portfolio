@@ -4,7 +4,7 @@ end
 
 local Services = {}
 
-Services.services = {
+Services.GetService = {
 	["rs"] = getService("ReplicatedStorage"),
 	["rf"] = getService("ReplicatedFirst"),
 	["ts"] = getService("TweenService"),
@@ -16,6 +16,7 @@ Services.services = {
 	["ms"] = getService("MaterialService"),
 	["mps"] = getService("MarketplaceService"),
 	["d"] = getService("Debris"),
+	["dss"] = getService("DataStoreService"),
 	["p"] = getService("Players"),
 	["uis"] = getService("UserInputService"),
 	["gs"] = getService("GuiService"),
@@ -44,6 +45,10 @@ local random = Random.new()
 
 function Services.Random(val1: number, val2: number)
 	return random:NextNumber(val1, val2)
+end
+
+function Services.UDim2()
+	return UDim2
 end
 
 local lerpFunctions = {
