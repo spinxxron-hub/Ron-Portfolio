@@ -103,7 +103,7 @@ function MusicMain.Init()
 
 	self.speedEnums = {
 		["1"] = 1.0,
-		["2"] = 10.5,
+		["2"] = 1.5,
 		["3"] = 0.75,
 	}
 
@@ -241,6 +241,49 @@ function MusicMain:RenderFavorite()
 	end
 end
 
+function MusicMain:ToggleMusicPlayer()
+	if self.UIState.Animating then
+		return
+	end
+	self.UIState.Animating = true
+
+	if not self.UIState.Open then
+		-- OPEN
+		self.UIState.Open = true
+		layout.Visible = true
+
+		task.spawn(function()
+			self:AnimateToY(layout, 1, 1, "In")
+		end)
+		task.spawn(function()
+			self:AnimateToY(musicButton, 0.5, 1, "In")
+		end)
+
+		task.delay(self.AnimDuration, function()
+			self.UIState.Animating = false
+		end)
+	else
+		-- CLOSE
+		self.UIState.Open = false
+
+		if listLayout.Visible then
+			listLayout.Visible = false
+		end
+
+		task.spawn(function()
+			self:AnimateToY(layout, 1, 2, "Out")
+		end)
+		task.spawn(function()
+			self:AnimateToY(musicButton, 0.5, 1, "Out")
+		end)
+
+		task.delay(self.AnimDuration, function()
+			layout.Visible = false
+			self.UIState.Animating = false
+		end)
+	end
+end
+
 function MusicMain:Connections()
 	remotes.LoadFavorite.OnClientEvent:Connect(function(savedFavorites)
 		self.controller.State.favorites = savedFavorites or {}
@@ -248,6 +291,10 @@ function MusicMain:Connections()
 	end)
 
 	remotes.LoadFavorite:FireServer()
+
+	remotes.ToggleMusicPlayer.Event:Connect(function()
+		self:ToggleMusicPlayer()
+	end)
 
 	musicButton.MouseEnter:Connect(function()
 		if not musicButtonBackground then
@@ -272,46 +319,7 @@ function MusicMain:Connections()
 	end)
 
 	musicButton.Activated:Connect(function()
-		if self.UIState.Animating then
-			return
-		end
-		self.UIState.Animating = true
-
-		if not self.UIState.Open then
-			-- OPEN
-			self.UIState.Open = true
-			layout.Visible = true
-
-			task.spawn(function()
-				self:AnimateToY(layout, 1, 1, "In")
-			end)
-			task.spawn(function()
-				self:AnimateToY(musicButton, 0.5, 1, "In")
-			end)
-
-			task.delay(self.AnimDuration, function()
-				self.UIState.Animating = false
-			end)
-		else
-			-- CLOSE
-			self.UIState.Open = false
-
-			if listLayout.Visible then
-				listLayout.Visible = false
-			end
-
-			task.spawn(function()
-				self:AnimateToY(layout, 1, 2, "Out")
-			end)
-			task.spawn(function()
-				self:AnimateToY(musicButton, 0.5, 1, "Out")
-			end)
-
-			task.delay(self.AnimDuration, function()
-				layout.Visible = false
-				self.UIState.Animating = false
-			end)
-		end
+		self:ToggleMusicPlayer()
 	end)
 
 	listButton.Activated:Connect(function()
