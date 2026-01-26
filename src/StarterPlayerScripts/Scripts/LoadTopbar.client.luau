@@ -1,11 +1,11 @@
 local Services = require(game:GetService("ReplicatedStorage").Shared.Services)
-
 local packages = Services.GetService.rs.Packages
 local remotes = Services.GetService.rs.Remotes
 
-local Icon = require(packages:WaitForChild("TopbarPlus"))
+local TopbarPlus = require(packages:WaitForChild("TopbarPlus"))
 
-Icon.new()
+-- Create the icon
+local musicIcon = TopbarPlus.new()
 	:bindEvent("selected", function()
 		remotes.ToggleMusicPlayer:Fire()
 	end)

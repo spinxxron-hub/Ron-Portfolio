@@ -262,6 +262,7 @@ function MusicMain:ToggleMusicPlayer()
 		task.delay(self.AnimDuration, function()
 			self.UIState.Animating = false
 		end)
+		print("check")
 	else
 		-- CLOSE
 		self.UIState.Open = false
@@ -714,7 +715,7 @@ function MusicMain:AnimateToY(target, originX, targetY, state)
 	if math.abs(startY - targetY) < 0.001 then
 		return
 	end
-
+	print("animate")
 	-- Determine if fading is needed
 	local fade = state == "In" or state == "Out"
 
