@@ -11,9 +11,34 @@ function MusicController.new(state)
 
 	self.SongChanged = Instance.new("BindableEvent")
 
-	self.Sound = SoundService:FindFirstChild("Music") or Instance.new("Sound")
-	self.Sound.Name = "Music"
-	self.Sound.Parent = SoundService
+	local validMP = SoundService:FindFirstChild("Music") or nil
+
+	if not validMP then
+		self.Sound = Instance.new("AudioPlayer")
+		self.Sound.Name = "Music"
+		self.Sound.Parent = SoundService
+
+		local audioAnalyzer = Instance.new("AudioAnalyzer")
+		audioAnalyzer.SpectrumEnabled = true
+		audioAnalyzer.Parent = self.Sound
+
+		local audioDeviceOutput = Instance.new("AudioDeviceOutput")
+		audioDeviceOutput.Parent = self.Sound
+
+		local analyzerWire = Instance.new("Wire")
+		analyzerWire.Parent = self.Sound
+		analyzerWire.Name = "AnalyzerWire"
+		analyzerWire.SourceInstance = self.Sound
+		analyzerWire.TargetInstance = audioAnalyzer
+
+		local outputWire = Instance.new("Wire")
+		outputWire.Parent = self.Sound
+		outputWire.Name = "OutputWire"
+		outputWire.SourceInstance = self.Sound
+		outputWire.TargetInstance = audioDeviceOutput
+	else
+		self.Sound = SoundService:FindFirstChild("Music")
+	end
 
 	self:_bindEnded()
 	return self
