@@ -116,6 +116,8 @@ function MusicMain.Init()
 	-- songs
 	self.ALL_SONGS = {}
 
+	local initialTotal = 0
+
 	for _, song in ipairs(MusicConfigs.MusicList) do
 		table.insert(self.ALL_SONGS, {
 			Id = "rbxassetid://" .. song.SoundId,
@@ -123,6 +125,7 @@ function MusicMain.Init()
 			Artist = song.MusicArtist,
 			Icon = song.AlbumIcon,
 		})
+		initialTotal += 1
 	end
 
 	table.sort(self.ALL_SONGS, function(a, b)
@@ -145,6 +148,7 @@ function MusicMain.Init()
 		pendingPlaylist = nil, -- "Favorites" | "Regular" | nil
 
 		index = 1,
+		total = initialTotal,
 
 		volume = 1,
 		CurrentSpeed = 1,
@@ -184,13 +188,20 @@ function MusicMain.Init()
 
 	self:Connections()
 	self:Start()
-	self:PlayCurrent()
+	self:PlayCurrent(Services.RandomInteger(1, initialTotal))
 
 	return self
 end
 
 function MusicMain:Start()
-	Services.GetService.RS.RenderStepped:Connect(function()
+	local accum = 0
+	Services.GetService.RS.RenderStepped:Connect(function(dt)
+		accum += dt
+		if accum < 0.1 then
+			return
+		end
+		accum = 0
+
 		playButton.Visible = not isPlaying.Value
 		pauseButton.Visible = isPlaying.Value
 
@@ -262,7 +273,6 @@ function MusicMain:ToggleMusicPlayer()
 		task.delay(self.AnimDuration, function()
 			self.UIState.Animating = false
 		end)
-		print("check")
 	else
 		-- CLOSE
 		self.UIState.Open = false
@@ -642,10 +652,14 @@ function MusicMain:RefreshList(searchText)
 end
 
 -- Modified Play function to support resume
-function MusicMain:PlayCurrent()
-	local song = self.controller.State.songs[self.controller.State.index]
+function MusicMain:PlayCurrent(songIndex)
+	local song = self.controller.State.songs[songIndex] or self.controller.State.songs[self.controller.State.index]
 	if not song then
 		return
+	end
+
+	if songIndex and songIndex ~= 0 then
+		self.controller.State.index = songIndex
 	end
 
 	self.controller:Play(song)
@@ -715,7 +729,7 @@ function MusicMain:AnimateToY(target, originX, targetY, state)
 	if math.abs(startY - targetY) < 0.001 then
 		return
 	end
-	print("animate")
+
 	-- Determine if fading is needed
 	local fade = state == "In" or state == "Out"
 
@@ -823,7 +837,7 @@ function MusicMain:AnimatePopup()
 	temp.AnchorPoint = Vector2.new(0.5, 0.5)
 	temp.Position = favoriteButton.Position
 
-	temp.Rotation = Services.Random(-30, 30)
+	temp.Rotation = Services.RandomInteger(-30, 30)
 
 	local startSize = temp.Size
 	local elapsed = 0

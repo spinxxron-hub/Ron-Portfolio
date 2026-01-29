@@ -47,6 +47,10 @@ function Services.Random(val1: number, val2: number)
 	return random:NextNumber(val1, val2)
 end
 
+function Services.RandomInteger(val1: number, val2: number)
+	return random:NextInteger(val1, val2)
+end
+
 function Services.UDim2()
 	return UDim2
 end
