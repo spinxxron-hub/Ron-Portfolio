@@ -187,21 +187,29 @@ function MusicMain.Init()
 	self.controller = controller
 
 	self:Connections()
-	self:Start()
+	self:StartVisualizer()
+
 	self:PlayCurrent(Services.RandomInteger(1, initialTotal))
+	self:StartUpdate()
 
 	return self
 end
 
-function MusicMain:Start()
-	local accum = 0
-	Services.GetService.RS.RenderStepped:Connect(function(dt)
-		accum += dt
-		if accum < 0.1 then
-			return
-		end
-		accum = 0
+function MusicMain:StartUpdate()
+	if
+		not playButton
+		or not pauseButton
+		or not isPlaying
+		or not self.controller.Sound
+		or not timePlayed
+		or not timeRemain
+		or not progressBar
+		or not visualizerProgressBar
+	then
+		return
+	end
 
+	while true do
 		playButton.Visible = not isPlaying.Value
 		pauseButton.Visible = isPlaying.Value
 
@@ -225,10 +233,12 @@ function MusicMain:Start()
 		if timeBackground then
 			timeBackground.TimePlayed.Text = self.FormatTime(timePlayed.Value)
 			timeBackground.TimeRemain.Text = self.FormatTime(timeRemain.Value)
+		else
+			continue
 		end
 
 		task.wait(0.1)
-	end)
+	end
 end
 
 function MusicMain.EaseOutQuad(t)
@@ -293,6 +303,56 @@ function MusicMain:ToggleMusicPlayer()
 			self.UIState.Animating = false
 		end)
 	end
+end
+
+function MusicMain:CreateBars()
+	for i = 1, MusicConfigs.Markers do
+		local bar = assets.UI.Bar:Clone()
+		bar.LayoutOrder = i
+		bar.Name = tostring(i)
+
+		bar.AnchorPoint = Vector2.new(0.5, 0.5)
+		bar.Position = UDim2.fromScale(bar.Position.X.Scale, 0.5)
+
+		bar:SetAttribute("BaseSize", bar.Size)
+		bar:SetAttribute("MaxExtraHeight", 1.5) -- tweak this
+
+		bar.Parent = visualizerContainer
+	end
+end
+
+function MusicMain:StartVisualizer()
+	self:CreateBars()
+
+	Services.GetService.RS.RenderStepped:Connect(function(dt)
+		local spectrum = self.controller.Sound.AudioAnalyzer:GetSpectrum()
+
+		for _, bar in ipairs(visualizerContainer:GetChildren()) do
+			if not bar:IsA("Frame") then
+				continue
+			end
+
+			local baseSize = bar:GetAttribute("BaseSize")
+			local maxExtra = bar:GetAttribute("MaxExtraHeight")
+			if not baseSize or not maxExtra then
+				continue
+			end
+
+			local amplitude = spectrum[bar.LayoutOrder] or 0
+
+			-- normalize spectrum
+			local scale = amplitude / 0.02
+			scale = math.clamp(scale, 0, 1)
+
+			-- final height
+			local extraHeight = scale * maxExtra
+			local targetHeight = baseSize.Y.Scale + extraHeight
+
+			local targetSize = UDim2.fromScale(baseSize.X.Scale, targetHeight)
+
+			bar.Size = bar.Size:Lerp(targetSize, math.clamp(dt * 10, 0, 1))
+		end
+	end)
 end
 
 function MusicMain:Connections()
@@ -423,41 +483,6 @@ function MusicMain:Connections()
 			or input.UserInputType == Enum.UserInputType.Touch
 		then
 			self.holding = false
-		end
-	end)
-
-	for i = 1, MusicConfigs.Markers do
-		local bar = assets.UI.Bar:Clone()
-		bar.LayoutOrder = i
-		bar.Name = tostring(i)
-
-		bar.AnchorPoint = Vector2.new(0.5, 0.5)
-		bar.Position = UDim2.fromScale(bar.Position.X.Scale, 0.5)
-
-		bar:SetAttribute("BaseSize", bar.Size)
-
-		bar.Parent = visualizerContainer
-	end
-
-	Services.GetService.RS.RenderStepped:Connect(function(dt)
-		local spectrum = self.controller.Sound.AudioAnalyzer:GetSpectrum()
-
-		for _, bar in ipairs(visualizerContainer:GetChildren()) do
-			if not bar:IsA("Frame") then
-				continue
-			end
-
-			local baseSize = bar:GetAttribute("BaseSize")
-			if not baseSize then
-				continue
-			end
-
-			local amplitude = spectrum[bar.LayoutOrder] or 0
-			local scale = amplitude / 0.03
-
-			local targetSize = baseSize + UDim2.fromScale(0, scale < 0.2 and 0.2 or scale)
-
-			bar.Size = bar.Size:Lerp(targetSize, math.min(1, dt * 10))
 		end
 	end)
 
