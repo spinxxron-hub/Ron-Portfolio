@@ -76,8 +76,8 @@ local favoriteBackground = buttons:FindFirstChild("FavoriteBackground")
 local favoriteButton = favoriteBackground.Favorite
 
 local speakerBackground = buttons:FindFirstChild("SpeakerBackground")
-local speakerMuteButton = speakerBackground.Mute
-local speakerUnmuteButton = speakerBackground.Unmute
+local speakerButton = speakerBackground.SpeakerButton
+local volumeSlider = speakerBackground.VolumeSlider
 
 local toggleBackground = buttons:FindFirstChild("ToggleBackground")
 local playButton = toggleBackground.Play
@@ -95,6 +95,7 @@ function MusicMain.Init()
 
 	self.hovered = false
 	self.holding = false
+	self.sliderHover = false
 	self.moveCon = nil
 
 	self.initialX = 0
@@ -105,6 +106,11 @@ function MusicMain.Init()
 		["1"] = 1.0,
 		["2"] = 1.5,
 		["3"] = 0.75,
+	}
+
+	self.SpeakerIcons = {
+		Muted = "rbxassetid://16332006068",
+		Unmuted = "rbxassetid://129927678810542",
 	}
 
 	self.speedOrder = { "1", "2", "3" } -- order of speed cycles
@@ -314,8 +320,13 @@ function MusicMain:CreateBars()
 		bar.AnchorPoint = Vector2.new(0.5, 0.5)
 		bar.Position = UDim2.fromScale(bar.Position.X.Scale, 0.5)
 
+		local baseSize = bar.Size
+		bar.Size = UDim2.fromScale(baseSize.X.Scale, baseSize.Y.Scale)
+
 		bar:SetAttribute("BaseSize", bar.Size)
-		bar:SetAttribute("MaxExtraHeight", 1.5) -- tweak this
+		bar:SetAttribute("ResponseMultiplier", Services.RandomNumber(0.7, 1.3))
+		bar:SetAttribute("MaxExtraHeight", Services.RandomNumber(0.5, 1))
+		bar:SetAttribute("FlickerPhase", Services.RandomNumber(0, math.pi * 2))
 
 		bar.Parent = visualizerContainer
 	end
@@ -324,7 +335,11 @@ end
 function MusicMain:StartVisualizer()
 	self:CreateBars()
 
+	local time = 0
+
 	Services.GetService.RS.RenderStepped:Connect(function(dt)
+		time += dt
+
 		local spectrum = self.controller.Sound.AudioAnalyzer:GetSpectrum()
 
 		for _, bar in ipairs(visualizerContainer:GetChildren()) do
@@ -334,6 +349,8 @@ function MusicMain:StartVisualizer()
 
 			local baseSize = bar:GetAttribute("BaseSize")
 			local maxExtra = bar:GetAttribute("MaxExtraHeight")
+			local phase = bar:GetAttribute("FlickerPhase") or 0
+
 			if not baseSize or not maxExtra then
 				continue
 			end
@@ -344,15 +361,92 @@ function MusicMain:StartVisualizer()
 			local scale = amplitude / 0.02
 			scale = math.clamp(scale, 0, 1)
 
-			-- final height
-			local extraHeight = scale * maxExtra
+			-- base height calc
+			local response = bar:GetAttribute("ResponseMultiplier") or 1
+
+			local extraHeight = scale * maxExtra * response
 			local targetHeight = baseSize.Y.Scale + extraHeight
+
+			local maxHeight = baseSize.Y.Scale + maxExtra
+			local distanceToMax = maxHeight - targetHeight
+
+			if distanceToMax < 0.03 then
+				local flickerStrength = 0.015 -- how tall the flicker is
+				local flickerSpeed = 18 -- how fast it moves
+
+				local flicker = math.sin(time * flickerSpeed + phase) * flickerStrength
+
+				targetHeight += flicker
+			end
 
 			local targetSize = UDim2.fromScale(baseSize.X.Scale, targetHeight)
 
-			bar.Size = bar.Size:Lerp(targetSize, math.clamp(dt * 10, 0, 1))
+			bar.Size = bar.Size:Lerp(targetSize, math.clamp(dt * 30, 0, 1))
 		end
 	end)
+end
+function MusicMain:UpdateSpeakerSlider(obj)
+	if obj.UserInputType == Enum.UserInputType.MouseMovement or obj.UserInputType == Enum.UserInputType.Touch then
+		self.sliderHover = true
+
+		self:UpdateVolume(obj)
+
+		local conn1 = Services.GetService.uis.InputChanged:Connect(function(input)
+			if
+				self.sliderHover
+				and (
+					input.UserInputType == Enum.UserInputType.MouseMovement
+					or input.UserInputType == Enum.UserInputType.Touch
+				)
+			then
+				self:UpdateVolume(obj)
+			end
+		end)
+		local conn2
+		conn2 = Services.GetService.uis.InputEnded:Connect(function(input)
+			if
+				input.UserInputType == Enum.UserInputType.MouseButton1
+				or input.UserInputType == Enum.UserInputType.Touch
+			then
+				self.sliderHover = false
+
+				if conn1 then
+					conn1:Disconnect()
+				end
+				if conn2 then
+					conn2:Disconnect()
+				end
+			end
+		end)
+	end
+end
+
+function MusicMain:UpdateVolume(obj)
+	if not volumeSlider.Knob or not volumeSlider.Fill then
+		return
+	end
+	local fill = volumeSlider.Fill
+	local knob = volumeSlider.Knob
+
+	if obj then
+		local pos = obj.Position
+		if not pos then
+			pos = Services.GetService.uis:GetMouseLocation()
+		end
+		local clamped = math.clamp((pos.X - volumeSlider.AbsolutePosition.X) / volumeSlider.AbsoluteSize.X, 0, 1)
+		--tbl_upvr_2.Volume = clamped_2
+		--var24_upvw = clamped_2
+		fill.Size = UDim2.new(clamped, 0, 1, 0)
+		knob.Position = UDim2.new(clamped, 0, 0.5, 0)
+
+		if clamped <= 0.1 then
+			speakerButton.Image = self.SpeakerIcons.Muted
+		else
+			speakerButton.Image = self.SpeakerIcons.Unmuted
+		end
+
+		self.controller:SetVolume(clamped)
+	end
 end
 
 function MusicMain:Connections()
@@ -394,18 +488,7 @@ function MusicMain:Connections()
 	end)
 
 	listButton.Activated:Connect(function()
-		if listLayout.Visible then
-			-- CLOSE
-
-			self:AnimateToRot(listButtonBackground, 0)
-			listLayout.Visible = false
-
-			for _, child in ipairs(listContainer:GetChildren()) do
-				if child:IsA("ImageButton") then
-					child.Visible = false
-				end
-			end
-		else
+		if not listLayout.Visible then
 			-- OPEN
 			listLayout.Visible = true
 
@@ -414,6 +497,16 @@ function MusicMain:Connections()
 
 			self:RefreshList("")
 			self:AnimateToRot(listButtonBackground, -90)
+		else
+			-- CLOSE
+			self:AnimateToRot(listButtonBackground, 0)
+			listLayout.Visible = false
+
+			for _, child in ipairs(listContainer:GetChildren()) do
+				if child:IsA("ImageButton") then
+					child.Visible = false
+				end
+			end
 		end
 	end)
 
@@ -486,6 +579,10 @@ function MusicMain:Connections()
 		end
 	end)
 
+	volumeSlider.SliderButton.InputBegan:Connect(function(obj)
+		self:UpdateSpeakerSlider(obj)
+	end)
+
 	playButton.Activated:Connect(function()
 		if not isPlaying.Value then
 			self:PlayCurrent()
@@ -498,19 +595,60 @@ function MusicMain:Connections()
 		end
 	end)
 
-	speakerMuteButton.Activated:Connect(function()
-		self.controller.State.muted = true
-		self.controller:SetVolume(false)
-		speakerMuteButton.Visible = false
-		speakerUnmuteButton.Visible = true
+	speakerButton.Activated:Connect(function()
+		--self.controller.State.muted = true
+		--self.controller:SetVolume(false)
+		--speakerMuteButton.Visible = false
+		--speakerUnmuteButton.Visible = true
+
+		if not volumeSlider then
+			return
+		end
+
+		local function toggleSpeaker(toggle)
+			local startX = volumeSlider.Size.X.Scale
+			local endX = toggle and 0.4 or 0
+
+			self.animIds[volumeSlider] = (self.animIds[volumeSlider] or 0) + 1
+			local id = self.animIds[volumeSlider]
+
+			local elapsed = 0
+
+			while elapsed < self.AnimDuration do
+				if self.animIds[volumeSlider] ~= id then
+					return
+				end
+
+				local dt = Services.GetService.RS.RenderStepped:Wait()
+				elapsed += dt
+
+				local t = math.clamp(elapsed / self.AnimDuration, 0, 1)
+				local alpha = self.EaseOutQuad(t)
+
+				local sizeX = startX + (endX - startX) * alpha
+				volumeSlider.Size = UDim2.new(sizeX, 0, 0.4, 0)
+			end
+
+			-- snap final
+			volumeSlider.Size = UDim2.new(endX, 0, 0.4, 0)
+			self.animIds[volumeSlider] = nil
+		end
+
+		if not volumeSlider.Visible then
+			volumeSlider.Visible = true
+			toggleSpeaker(true)
+		else
+			toggleSpeaker(false)
+			volumeSlider.Visible = false
+		end
 	end)
 
-	speakerUnmuteButton.Activated:Connect(function()
-		self.controller.State.muted = false
-		self.controller:SetVolume(true)
-		speakerMuteButton.Visible = true
-		speakerUnmuteButton.Visible = false
-	end)
+	--speakerUnmuteButton.Activated:Connect(function()
+	--	self.controller.State.muted = false
+	--	self.controller:SetVolume(true)
+	--	speakerMuteButton.Visible = true
+	--	speakerUnmuteButton.Visible = false
+	--end)
 
 	nextButton.Activated:Connect(function()
 		self.controller:Next()
@@ -821,6 +959,8 @@ function MusicMain:AnimateToY(target, originX, targetY, state)
 			obj[prop] = targetAlpha
 		end
 	end
+
+	self.animIds[target] = nil
 end
 
 function MusicMain:AnimateToRot(target, targetRot)
@@ -851,6 +991,7 @@ function MusicMain:AnimateToRot(target, targetRot)
 
 			target.Rotation = startRot + (targetRot - startRot) * alpha
 		end
+		self.animIds[target] = nil
 	end)
 
 	target.Rotation = targetRot

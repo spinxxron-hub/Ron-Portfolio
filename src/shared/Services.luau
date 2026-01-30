@@ -43,7 +43,7 @@ Services.BaseProperties = {
 
 local random = Random.new()
 
-function Services.Random(val1: number, val2: number)
+function Services.RandomNumber(val1: number, val2: number)
 	return random:NextNumber(val1, val2)
 end
 

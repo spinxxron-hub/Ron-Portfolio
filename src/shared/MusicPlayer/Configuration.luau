@@ -6,242 +6,247 @@ local Config = {
 
 	MusicList = {
 		{
-			MusicKey = "multo",
-			SoundId = 1846088038,
+			SoundId = 120119493259513,
 			MusicName = "Multo",
 			MusicArtist = "Cup Of Joe",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "pahina",
-			SoundId = 1848354536,
+			SoundId = 125002803163167,
 			MusicName = "Pahina",
 			MusicArtist = "Cup Of Joe",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "kantang_para_sayo",
-			SoundId = 1846088038,
+			SoundId = 103152537652330,
 			MusicName = "Kantang Para Sayo",
 			MusicArtist = "Arco",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "breeze_cafe",
-			SoundId = 1848354536,
+			SoundId = 133359649173018,
 			MusicName = "Breeze Café",
 			MusicArtist = "-",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "let_me_be_the_one",
-			SoundId = 1846088038,
+			SoundId = 110905674073393,
 			MusicName = "Let me Be The One",
 			MusicArtist = "Jimmy Bondoc",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "hindi_tayo_pwede",
-			SoundId = 1848354536,
+			SoundId = 88969530862661,
 			MusicName = "Hindi Tayo Pwede",
 			MusicArtist = "The Juans",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "mata_sa_mata",
-			SoundId = 1846088038,
+			SoundId = 79861783316209,
 			MusicName = "Mata sa Mata",
 			MusicArtist = "7th",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "dusk_til_dawn",
-			SoundId = 1848354536,
+			SoundId = 119700935596421,
 			MusicName = "Dusk 'til Dawn",
 			MusicArtist = "Glaiza De Castro",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "hindi_ako_mawawala",
-			SoundId = 1846088038,
+			SoundId = 91882493348032,
 			MusicName = "Hindi Ako Mawawala",
 			MusicArtist = "El Manu",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "kahel_na_langit",
-			SoundId = 1848354536,
+			SoundId = 119836664075528,
 			MusicName = "Kahel Na Langit",
 			MusicArtist = "Maki",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "palagi",
-			SoundId = 1846088038,
+			SoundId = 108434203980995,
 			MusicName = "Palagi",
 			MusicArtist = "TJ Monterde",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "burnout",
-			SoundId = 1848354536,
+			SoundId = 115771102959956,
 			MusicName = "Burnout",
-			MusicArtist = "-",
+			MusicArtist = ":<",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "tingin",
-			SoundId = 1846088038,
+			SoundId = 117611424166121,
 			MusicName = "Tingin",
 			MusicArtist = "Cup of Joe",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "sa_bawat_sandali",
-			SoundId = 1848354536,
+			SoundId = 88398808795704,
 			MusicName = "Sa Bawat Sandali",
 			MusicArtist = "Amiel Sol",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "unti_unti",
-			SoundId = 1846088038,
+			SoundId = 84914972774650,
 			MusicName = "Unti-unti",
 			MusicArtist = "UDD",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "tapusin_na_natin_to",
-			SoundId = 1848354536,
+			SoundId = 126613503607893,
 			MusicName = "Tapusin Na Natin To",
 			MusicArtist = "Juan Karlos",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "kisame",
-			SoundId = 1846088038,
+			SoundId = 109980096407694,
 			MusicName = "Kisame",
 			MusicArtist = "rhodessa",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "sandali_na_lang",
-			SoundId = 1848354536,
+			SoundId = 125573798906377,
 			MusicName = "Sandali Na Lang",
 			MusicArtist = "Hale",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "umaasa",
-			SoundId = 1846088038,
+			SoundId = 133925046853167,
 			MusicName = "Umaasa",
 			MusicArtist = "CALEIN",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "hintai",
-			SoundId = 1848354536,
+			SoundId = 115484449607407,
 			MusicName = "Hintai",
 			MusicArtist = "-",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "pahintulot",
-			SoundId = 1846088038,
+			SoundId = 125829703196270,
 			MusicName = "Pahintulot",
 			MusicArtist = "Shirebound",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "di_na_babalik",
-			SoundId = 1848354536,
+			SoundId = 100994313196426,
 			MusicName = "Di Na Babalik",
 			MusicArtist = "This Band",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "masiram",
-			SoundId = 1846088038,
+			SoundId = 126826302973007,
 			MusicName = "Masiram",
 			MusicArtist = "Just Hush",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "burgis",
-			SoundId = 1848354536,
+			SoundId = 114211812512071,
 			MusicName = "Burgis",
 			MusicArtist = "Hev Abi",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "supafly",
-			SoundId = 1846088038,
+			SoundId = 76095423286185,
 			MusicName = "Supafly",
 			MusicArtist = "Answer The G",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "alam_mo_ba_girl",
-			SoundId = 1848354536,
+			SoundId = 130747392139198,
 			MusicName = "Alam Mo Ba Girl",
 			MusicArtist = "Hev Abi",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "pa_umaga",
-			SoundId = 1846088038,
+			SoundId = 129145099024653,
 			MusicName = "Pa Umaga",
 			MusicArtist = "Al James",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "tagay",
-			SoundId = 1848354536,
+			SoundId = 118641397785171,
 			MusicName = "Tagay",
 			MusicArtist = "J King",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "gusto_with_ya",
-			SoundId = 1846088038,
+			SoundId = 130606620833917,
 			MusicName = "Gusto With Ya",
 			MusicArtist = "DENY",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 
 		{
-			MusicKey = "pero_atik_ra",
-			SoundId = 1848354536,
+			SoundId = 115961454016770,
 			MusicName = "Pero Atik Ra",
 			MusicArtist = "Jacky Chang",
+			AlbumIcon = "rbxassetid://85945661957976",
+		},
+
+		{
+			SoundId = 130393004369850,
+			MusicName = "Dating Tayo.",
+			MusicArtist = "©",
+			AlbumIcon = "rbxassetid://85945661957976",
+		},
+
+		{
+			SoundId = 75988266614461,
+			MusicName = "Paralumbay.",
+			MusicArtist = "©",
+			AlbumIcon = "rbxassetid://85945661957976",
+		},
+
+		{
+			SoundId = 93571222878830,
+			MusicName = "Isip.",
+			MusicArtist = "©",
+			AlbumIcon = "rbxassetid://85945661957976",
+		},
+
+		{
+			SoundId = 90139320588085,
+			MusicName = "Sino.",
+			MusicArtist = "©",
+			AlbumIcon = "rbxassetid://85945661957976",
+		},
+
+		{
+			SoundId = 87915025957041,
+			MusicName = "Halik Sa Hangin.",
+			MusicArtist = "©",
 			AlbumIcon = "rbxassetid://85945661957976",
 		},
 	},

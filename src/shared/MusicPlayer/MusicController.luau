@@ -168,12 +168,12 @@ end
 --// Volume (smooth fade, tap-safe)
 --// =========================
 
-function MusicController:SetVolume(muted)
+function MusicController:SetVolume(volume)
 	if not self.Sound then
 		return
 	end
 
-	local targetVolume = muted and 0 or (self.State.volume or 1)
+	local targetVolume = volume or 1
 	local step = 0.05
 	local delay = 0.02
 
@@ -191,7 +191,7 @@ function MusicController:SetVolume(muted)
 		self._fadeTask = nil
 	end)
 
-	self.State.muted = muted
+	--self.State.muted = muted
 end
 
 --// =========================
